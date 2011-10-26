@@ -18,6 +18,12 @@ class midgardmvc_ui_create_controllers_backbone
     private $object = null;
     private $form = null;
     private $baseurl = null;
+    private $validation = false;
+
+    public function __construct()
+    {
+        $this->validation = midgardmvc_core::get_instance()->configuration->server_side_validation;
+    }
 
     public function load_object(array $args)
     {
@@ -108,6 +114,7 @@ class midgardmvc_ui_create_controllers_backbone
     private function populate_object(stdClass $data)
     {
         $form = midgardmvc_helper_forms_mgdschema::create($this->object, false);
+
         foreach ($data as $property => $value)
         {
             $mgd_property = $this->rdfmapper->__get($property);
@@ -116,8 +123,12 @@ class midgardmvc_ui_create_controllers_backbone
             {
                 continue;
             }
+
             $form->$mgd_property->set_value($value);
-            $form->$mgd_property->validate();
+            if ($this->validation)
+            {
+                $form->$mgd_property->validate();
+            }
             $form->$mgd_property->clean();
             $this->object->$mgd_property = $form->$mgd_property->get_value();
         }

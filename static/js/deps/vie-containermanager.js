@@ -40,9 +40,18 @@ VIE.ContainerManager = {
         var containerProperties = {};
 
         VIE.ContainerManager.findContainerProperties(element, true).each(function() {
-        	var propertyName;
+            var propertyName;
+            var propertyDefault;
             var objectProperty = jQuery(this);
+
             propertyName = objectProperty.attr('property');
+            propertyDefault = objectProperty.attr('default');
+
+            if (typeof propertyDefault === 'undefined')
+            {
+                //todo: localize
+                propertyDefault = 'default';
+            }
 
             if (typeof containerProperties[propertyName] !== 'undefined') {
                 if (containerProperties[propertyName] instanceof Array) {
@@ -66,7 +75,7 @@ VIE.ContainerManager = {
             }
 
             if (emptyValues) {
-                containerProperties[propertyName] = '';
+                containerProperties[propertyName] = propertyDefault;
                 return;
             }
 
@@ -123,7 +132,7 @@ VIE.ContainerManager = {
             this.model.bind('change', this.render);
         };
         viewProperties.tagName = element.get(0).nodeName;
-        viewProperties.make = function(tagName, attributes, content) { 
+        viewProperties.make = function(tagName, attributes, content) {
             return VIE.ContainerManager.cloneContainer(element);
         };
         viewProperties.render = function() {
@@ -153,7 +162,7 @@ VIE.ContainerManager = {
 
     getModelForContainer: function(element) {
         var type = VIE.ContainerManager._getContainerValue(element, 'typeof');
-        
+
 
         if (typeof VIE.ContainerManager.models[type] !== 'undefined') {
             // We already have a model for this type
@@ -178,6 +187,7 @@ VIE.ContainerManager = {
                 if (["id"].indexOf(property) == -1)
                     instanceLD[property] = instance.attributes[property];
             }
+
             return instanceLD;
         }
 
@@ -248,7 +258,7 @@ VIE.ContainerManager = {
             || VIE.ContainerManager.instanceSingletons[properties.id] === undefined) {
             var modelInstance = new model(properties);
         }
-        else 
+        else
         {
             var modelInstance = VIE.ContainerManager.instanceSingletons[properties.id];
             modelInstance.set(properties);

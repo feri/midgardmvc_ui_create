@@ -1,5 +1,5 @@
 document.write('<script type="text/javascript" src="/midgardmvc-static/midgardmvc_ui_create/js/deps/underscore-min.js"></script>');
-document.write('<script type="text/javascript" src="/midgardmvc-static/midgardmvc_ui_create/js/deps/backbone-min.js"></script>');
+document.write('<script type="text/javascript" src="/midgardmvc-static/midgardmvc_ui_create/js/deps/backbone.js"></script>');
 document.write('<script type="text/javascript" src="/midgardmvc-static/midgardmvc_ui_create/js/deps/vie-containermanager.js"></script>');
 
 if (typeof midgardCreate === 'undefined') {
@@ -37,7 +37,7 @@ midgardCreate.objectManager = {
                     }
 
                     if (!modelInstance.get(propName)) {
-                        populateProperties[propName] = modelInstance.getPlaceholder(propName);
+                        populateProperties[propName] = propValue;
                     }
 
                 });
@@ -101,6 +101,7 @@ midgardCreate.objectManager = {
                 VIE.ContainerManager.findContainerProperties(this.el, true).each(function() {
                     var propertyElement = jQuery(this);
                     var propertyName = propertyElement.attr('property');
+                    var propertyDefault = propertyElement.attr('default');
 
                     if (model.get(propertyName) instanceof Array) {
                         // For now we don't deal with multivalued properties in Views
@@ -115,7 +116,7 @@ midgardCreate.objectManager = {
                 if (   typeof model.collection !== 'undefined'
                     && model.collection.urlpattern
                     && model.id) {
-                    jQuery('a[rel="bookmark"]', this.el).each(function() {	
+                    jQuery('a[rel="bookmark"]', this.el).each(function() {
                         jQuery(this).attr('href', model.collection.urlpattern.replace('GUID', model.id.replace('urn:uuid:', '')));
                     });
                 };

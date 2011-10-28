@@ -138,11 +138,10 @@ midgardCreate.Editable = {
         });
     },
 
-    activateEditable: function(objectInstance, propertyName) {
+    activateEditable: function(objectInstance, propertyName, propertyDefault) {
         /*if (objectInstance.get(propertyName) == objectInstance.getPlaceholder(propertyName)) {
             // TODO: Clear placeholder content when user starts editing
         }*/
-
         if (midgardCreate.Editable.editableTimer !== null) {
             window.clearInterval(midgardCreate.Editable.editableTimer);
             midgardCreate.Editable.editableTimer = null;
@@ -198,20 +197,27 @@ midgardCreate.Editable = {
             midgardCreate.Image.prepareUploadTarget(objectInstance, objectProperty.get(0), midgardCreate.imagePlugin.insertImage);
 
             var propertyName = objectProperty.attr('property');
+            var propertyDefault = objectProperty.attr('default');
+
+            if (typeof propertyDefault === "undefined")
+            {
+                propertyDefault = 'default';
+            }
+
             objectInstance.editables[propertyName] = new GENTICS.Aloha.Editable(objectProperty);
 
             // Subscribe to activation and deactivation events
             GENTICS.Aloha.EventRegistry.subscribe(objectInstance.editables[propertyName], 'editableActivated', function() {
-                midgardCreate.Editable.activateEditable(objectInstance, propertyName); 
+                midgardCreate.Editable.activateEditable(objectInstance, propertyName, propertyDefault);
             });
             GENTICS.Aloha.EventRegistry.subscribe(objectInstance.editables[propertyName], 'editableDeactivated', function() {
-                midgardCreate.Editable.deactivateEditable(objectInstance, propertyName); 
+                midgardCreate.Editable.deactivateEditable(objectInstance, propertyName);
             });
 
             objectProperty.effect('highlight', { color: midgardCreate.highlightcolor }, 3000);
         });
 
-        midgardCreate.Editable.objects[midgardCreate.Editable.objects.length] = objectInstance;
+        midgardCreate.Editable.objects.push(objectInstance);
     },
 
     enterEditState: function() {

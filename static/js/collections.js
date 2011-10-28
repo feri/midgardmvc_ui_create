@@ -11,6 +11,7 @@ midgardCreate.Collections = {
 
     enableCollections: function() {
         jQuery.each(midgardCreate.Collections.collections, function(index, collectionInstance) {
+            //todo: localize
             collectionInstance.view.addButton = jQuery('<button>Add</button>').button();
 
             collectionInstance.view.addButton.click(function() {
